@@ -12,7 +12,7 @@ from pytrends.request import TrendReq
 from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
 #from fbprophet.diagnostics import cross_validation
 
-def prediction(dir, kw_loc, num):
+def prediction(dir, kw_loc, num, future_period):
     df_kw = pd.read_csv('{}/{}'.format(dir,kw_loc))
     pytrend = TrendReq(hl='en-US',tz=360)
     #kw_list = ['oem product']
@@ -45,7 +45,7 @@ def prediction(dir, kw_loc, num):
         df.set_index('id')
         m = fbprophet.Prophet(seasonality_mode='multiplicative', mcmc_samples = 300)
         m.fit(df)
-        future = m.make_future_dataframe(periods=12,freq='M')
+        future = m.make_future_dataframe(periods=future_period,freq='M')
         forecast = m.predict(future)
         m.plot(forecast,xlabel='Date', ylabel='Interest of {}'.format(name));
         metric_df = forecast.set_index('ds')[['yhat']].join(df.set_index('ds').y).reset_index()

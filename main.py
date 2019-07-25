@@ -12,7 +12,7 @@ import pandas as pd
 import os
 import sys
 
-def main(list_name):
+def main(list_name, future_period=12):
     dir = 'save_temp'
     #list_name = 'skincare'
     
@@ -30,18 +30,21 @@ def main(list_name):
         print(filename)
         if filename.endswith(".csv"):
             if ctr == 0:
-                df = prediction(dir,filename,ctr)
+                df = prediction(dir,filename,ctr, future_period=future_period)
             else:
                 df = pd.concat([df, prediction(dir,filename,ctr)], axis=1, sort=False)
             ctr +=1
     df.to_csv('{}/keyword_prediction_for_{}.csv'.format(list_name,list_name))
 
 if __name__ == '__main__':
-    if len(sys.argv) != 2:
+    if len(sys.argv) < 2 or len(sys.argv) > 3:
         print('Oops Wrong syntax, refer below:')
-        print('python main.py [list name]')
+        print('python main.py [list name] [future period in week]')
     else :
         try:
-            main(sys.argv[1])
+            if len(sys.argv) == 3:
+                main(sys.argv[1], sys.argv[2])
+            else :
+                main(sys.argv[1])
         except KeyboardInterrupt:
             print('Aborted')
