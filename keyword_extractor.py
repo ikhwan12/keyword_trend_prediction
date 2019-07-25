@@ -44,7 +44,7 @@ def extract(data):
         if temp != None:
             if temp.count(',') > 0 :
                 for t in range(0,temp.count(',')):
-                    if(len(temp.split(',')[t])<25):
+                    if(len(temp.split(',')[t])<50):
                         kw_list.append(temp.split(',')[t])
             else:
                 kw_list.append(temp.split(',')[0] if temp.find(',') else temp)

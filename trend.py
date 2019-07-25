@@ -9,8 +9,10 @@ Created on Mon Jul 22 10:07:33 2019
 import fbprophet
 import pandas as pd
 from pytrends.request import TrendReq
+from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
+#from fbprophet.diagnostics import cross_validation
 
-def prediction(dir, kw_loc):
+def prediction(dir, kw_loc, num):
     df_kw = pd.read_csv('{}/{}'.format(dir,kw_loc))
     pytrend = TrendReq(hl='en-US',tz=360)
     #kw_list = ['oem product']
@@ -31,6 +33,9 @@ def prediction(dir, kw_loc):
     df = pd.DataFrame()
     ctr = 0
     df_kw_pred = pd.DataFrame()
+    #df_cv = []
+    df_cv = pd.DataFrame({'keyword':[], 'R2':[],
+                              'MSE':[], 'MAE':[]})
     for name in data.columns.values[1:]:
         results = []
         df['ds'] = data['date']
@@ -43,7 +48,14 @@ def prediction(dir, kw_loc):
         future = m.make_future_dataframe(periods=12,freq='M')
         forecast = m.predict(future)
         m.plot(forecast,xlabel='Date', ylabel='Interest of {}'.format(name));
-        
+        metric_df = forecast.set_index('ds')[['yhat']].join(df.set_index('ds').y).reset_index()
+        metric_df.dropna(inplace=True)
+        arr_r2 = r2_score(metric_df.y, metric_df.yhat)
+        arr_mse = mean_squared_error(metric_df.y, metric_df.yhat)
+        arr_mae = mean_absolute_error(metric_df.y, metric_df.yhat)
+        df_cv = df_cv.append({'keyword':name, 'R2':arr_r2,
+                              'MSE':arr_mse, 'MAE':arr_mae}, ignore_index=True)
+        df_cv.to_csv('{}/cv_{}.csv'.format(dir,num))
         ff = forecast.yhat.values
         for i in ff[:] :
             results.append(int(i))
