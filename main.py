@@ -34,6 +34,7 @@ def main(list_name, future_period=12):
             else:
                 df = pd.concat([df, prediction(dir,filename,ctr)], axis=1, sort=False)
             ctr +=1
+    df = pd.DataFrame()
     df.to_csv('{}/keyword_prediction_for_{}.csv'.format(list_name,list_name))
 
 if __name__ == '__main__':
