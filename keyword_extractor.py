@@ -5,17 +5,22 @@ Created on Mon Jul 22 09:59:18 2019
 
 @author: ikhwan
 """
+import logging
 import pandas as pd
 from urllib.request import urlopen
 import urllib.request
 from bs4 import BeautifulSoup
 import math
+from socket import timeout
 
 delay = 120
+
 def get_data(url_name):
     webpage ='http://www.ourland.com.tw'
     try:
-        webpage = urlopen('{}'.format(url_name)).read()
+        webpage = urlopen('{}'.format(url_name), timeout=200).read()
+    except timeout:
+        logging.error('socket timed out - URL %s', url_name)
     except (urllib.error.HTTPError) as err:
         print(err.code)
         if(err.code == 403 or err.code == 104):
@@ -36,6 +41,7 @@ def get_data(url_name):
 
 def extract(data):
     kw_list = []
+    #kw_list = pd.read_csv('suggested_keywords.csv').values.tolist()
     print('(*) Read data from web list')
     web_list = pd.read_csv('{}.csv'.format(data))
     for index, url in web_list.iterrows():
@@ -55,8 +61,13 @@ def extract(data):
     kw_list = list(dict.fromkeys(kw_list))
     n_run = math.ceil(len(kw_list)/5)
     for run in range(0,n_run):
+        temp = []
         start = run*5
         end = start+4
-        df = pd.DataFrame({'keyword':kw_list[start:end]})
-        df.to_csv('save_temp/keyword_list_{}.csv'.format(run))
+        for i in range(start,end):
+            temp.append(kw_list[i])
+        df = pd.DataFrame({'keyword':temp})
+        df.to_csv('save_temp/keyword_list_{}.csv'.format(run))    
     print('All keywords files are extracted')
+    df = pd.DataFrame({'keyword':kw_list})
+    df.to_csv('keyword_list_{}.csv'.format(data))

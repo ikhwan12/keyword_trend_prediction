@@ -13,6 +13,7 @@ from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
 #from fbprophet.diagnostics import cross_validation
 
 def prediction(dir, kw_loc, num, future_period):
+    future_period = int(future_period)
     df_kw = pd.read_csv('{}/{}'.format(dir,kw_loc))
     pytrend = TrendReq(hl='en-US',tz=360)
     #kw_list = ['oem product']
@@ -27,7 +28,8 @@ def prediction(dir, kw_loc, num, future_period):
     
     #import data
     data = search_df
-    data = data.drop(['isPartial'], axis=1)
+    if 'isPartial' in data.columns:
+        data = data.drop(['isPartial'], axis=1)
     data.to_csv('lll.csv')
     data = pd.read_csv('lll.csv')
     df = pd.DataFrame()

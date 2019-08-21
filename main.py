@@ -14,7 +14,7 @@ import sys
 
 def main(list_name, future_period=12):
     dir = 'save_temp'
-    #list_name = 'skincare'
+    #list_name = 'pet_care'
     
     #remove all files in save_temp
     for filename in os.listdir(dir):
@@ -26,14 +26,17 @@ def main(list_name, future_period=12):
     
     #load extracted keywords into the prediction
     ctr = 0
-    for filename in os.listdir(dir):
+    ldr = os.listdir(dir)
+    ldr.sort(key=lambda f: int(''.join(filter(str.isdigit, f))))
+    for filename in sorted(ldr):
         print(filename)
         if filename.endswith(".csv"):
             if ctr == 0:
                 df = prediction(dir,filename,ctr, future_period=future_period)
             else:
-                df = pd.concat([df, prediction(dir,filename,ctr)], axis=1, sort=False)
+                df = pd.concat([df, prediction(dir,filename,ctr, future_period=future_period)], axis=1, sort=False)
             ctr +=1
+    df = pd.DataFrame()
     df.to_csv('{}/keyword_prediction_for_{}.csv'.format(list_name,list_name))
 
 if __name__ == '__main__':

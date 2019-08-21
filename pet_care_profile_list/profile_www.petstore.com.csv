@@ -1,0 +1,11 @@
+,value,type,confidence,first_name,last_name,position,seniority,department,linkedin,twitter,phone_number
+0,matt@petstore.com,personal,94,Matt,Smith,,,,,,
+0,customercare@petstore.com,generic,92,,,,,support,,,
+0,samsmith@petstore.com,personal,80,,,,,,,,
+0,webmaster@petstore.com,generic,79,,,,,it,,,
+0,member-desk@petstore.com,generic,79,,,,,,,,
+0,marketing@petstore.com,generic,78,,,,,marketing,,,
+0,marketingmanager@petstore.com,generic,77,,,,,management,,,
+0,promotions@petstore.com,generic,76,,,,,communication,,,
+0,contacto@petstore.com,generic,75,,,,,executive,,,
+0,hr@petstore.com,generic,75,,,,,hr,,,
